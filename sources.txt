@@ -1,0 +1,5 @@
+# One raw subscription URL per line. Lines starting with # are ignored.
+https://raw.githubusercontent.com/barry-far/V2ray-config/main/Splitted-By-Protocol/vless.txt
+https://raw.githubusercontent.com/barry-far/V2ray-config/main/Splitted-By-Protocol/vmess.txt
+https://github.com/Epodonios/v2ray-configs/raw/main/Splitted-By-Protocol/vless.txt
+https://github.com/Epodonios/v2ray-configs/raw/main/Splitted-By-Protocol/vmess.txt
