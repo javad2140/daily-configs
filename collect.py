@@ -46,7 +46,7 @@ OUT_REPORT = BASE_DIR / "report.txt"
 WORK_DIR = BASE_DIR / "work"
 
 PROFILE_TITLE = "Daily Configs"   # name shown in Hiddify
-UPDATE_INTERVAL_HOURS = 1         # how often Hiddify re-downloads the file
+UPDATE_INTERVAL_HOURS = 6         # how often Hiddify re-downloads the file
 
 MAX_AGE_HOURS = 48                # Telegram: ignore posts older than this
 PAGES_PER_CHANNEL = 5             # Telegram: pages (about 20 posts each) per channel
@@ -63,16 +63,16 @@ MAX_WORKERS = 100
 XRAY_KNIFE = os.environ.get("XRAY_KNIFE_BIN", "xray-knife")
 REAL_TEST_ENABLED = True
 REAL_TEST_THREADS = 60
-REAL_TEST_MAX_DELAY_MS = 6000
+REAL_TEST_MAX_DELAY_MS = 3000
 REAL_TEST_TIMEOUT_SEC = 25 * 60
 SPEED_TEST_ENABLED = True
 SPEED_TEST_TOP = 40
 SPEED_TEST_THREADS = 4
 SPEED_TEST_TIMEOUT_SEC = 15 * 60
 
-FINAL_VERIFIED_MAX = 150          # max verified servers kept (best first)
-EXTRA_UNVERIFIED = 30             # extra servers that passed only the TCP check
-FALLBACK_MAX = 200                # list size if the real test could not run
+FINAL_VERIFIED_MAX = 25           # max verified servers kept (best first)
+EXTRA_UNVERIFIED = 0              # extra servers that passed only the TCP check
+FALLBACK_MAX = 30                 # list size if the real test could not run
 
 REQUEST_DELAY = 1.0               # seconds between Telegram page requests
 USER_AGENT = (
