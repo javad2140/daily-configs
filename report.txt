@@ -1,16 +1,16 @@
-updated_utc: 2026-11-22 11:53:08
+updated_utc: 2026-11-22 19:19:00
 method: real test + speed test
-unique_links: 1146
-after_tcp_check: 803
-passed_real_test: 185
-speed_tested: 40
+unique_links: 1161
+after_tcp_check: 839
+passed_real_test: 159
+speed_tested: 39
 written_to_sub: 180
 
 telegram V2rayuir: 9 links
-telegram v2rayngvpn: 120 links
+telegram v2rayngvpn: 119 links
 telegram proxymtprotoir: 25 links
-source barry-far/V2ray-config/vless.txt: 6153 links (using 600)
-source barry-far/V2ray-config/vmess.txt: 499 links (using 499)
+source barry-far/V2ray-config/vless.txt: 5910 links (using 600)
+source barry-far/V2ray-config/vmess.txt: 526 links (using 526)
 source Epodonios/v2ray-configs/Sub1.txt: FAILED
 source Epodonios/v2ray-configs/Sub2.txt: FAILED
 source Epodonios/v2ray-configs/Sub3.txt: FAILED
