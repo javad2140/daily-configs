@@ -2,16 +2,20 @@ name: Update subscription
 
 on:
   schedule:
-    - cron: "0 */3 * * *"
+    - cron: "*/30 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: update-subscription
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,6 +25,18 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install xray-knife
+        continue-on-error: true
+        run: |
+          mkdir -p "$RUNNER_TEMP/xk"
+          cd "$RUNNER_TEMP/xk"
+          curl -fsSL -o xk.zip "https://github.com/lilendian0x00/xray-knife/releases/download/v11.1.0/Xray-knife-linux-64.zip"
+          unzip -q xk.zip
+          XK_BIN="$(find . -type f -name 'xray-knife' | head -n 1)"
+          chmod +x "$XK_BIN"
+          echo "XRAY_KNIFE_BIN=$RUNNER_TEMP/xk/$XK_BIN" >> "$GITHUB_ENV"
+          "$XK_BIN" -V || true
+
       - name: Collect configs
         run: python collect.py
 
@@ -28,10 +44,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add sub.txt sub_b64.txt
+          git add -A -- sub.txt sub_b64.txt report.txt || true
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
             git commit -m "Update subscription"
+            git pull --rebase origin main || true
             git push
           fi
