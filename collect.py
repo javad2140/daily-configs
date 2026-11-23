@@ -10,7 +10,8 @@ Pipeline:
   - sanitize + remove duplicates
   - TCP check (drops servers whose port does not answer from this machine)
   - real connection test with xray-knife (delay), then speed test on the best ones
-  - writes sub.txt (plain, with Hiddify header lines), sub_b64.txt and report.txt
+  - writes data.txt (Base64 of the server list, with Hiddify header lines inside);
+    the report is only printed in the Actions log
 
 If xray-knife is missing or fails, the script falls back to the TCP-only list.
 Needs only the Python standard library (plus the xray-knife binary for the real test).
@@ -40,9 +41,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 CHANNELS_FILE = BASE_DIR / "channels.txt"
 SOURCES_FILE = BASE_DIR / "sources.txt"
-OUT_PLAIN = BASE_DIR / "sub.txt"
-OUT_B64 = BASE_DIR / "sub_b64.txt"
-OUT_REPORT = BASE_DIR / "report.txt"
+OUT_B64 = BASE_DIR / "data.txt"
 WORK_DIR = BASE_DIR / "work"
 
 PROFILE_TITLE = "Daily Configs"   # name shown in Hiddify
@@ -53,7 +52,7 @@ PAGES_PER_CHANNEL = 5             # Telegram: pages (about 20 posts each) per ch
 CHANNEL_CAP = 300                 # max links taken from one Telegram channel
 SOURCE_CAP = 600                  # max links taken (random sample) from one GitHub file
 MAX_CANDIDATES = 2500             # max servers sent to the real test
-MAX_LINKS = 400                   # max links written to sub.txt
+MAX_LINKS = 400                   # max links written to data.txt
 
 REMOVE_DEAD = True                # drop servers whose port does not answer
 TCP_TIMEOUT = 4.0
@@ -539,8 +538,10 @@ def main():
 
     header = "#profile-title: %s\n#profile-update-interval: %d\n\n" % (PROFILE_TITLE, UPDATE_INTERVAL_HOURS)
     plain = "\n".join(final)
-    OUT_PLAIN.write_text(header + plain + "\n", encoding="utf-8")
-    OUT_B64.write_text(base64.b64encode(plain.encode("utf-8")).decode("ascii"), encoding="utf-8")
+    OUT_B64.write_text(
+        base64.b64encode((header + plain + "\n").encode("utf-8")).decode("ascii"),
+        encoding="utf-8",
+    )
 
     report_lines = [
         "updated_utc: %s" % datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
@@ -552,9 +553,12 @@ def main():
         "written_to_sub: %d" % len(final),
         "",
     ] + report
-    OUT_REPORT.write_text("\n".join(report_lines) + "\n", encoding="utf-8")
+    log("----- REPORT -----")
+    for line in report_lines:
+        log(line)
+    log("------------------")
 
-    log("Saved %d links to %s (method: %s)" % (len(final), OUT_PLAIN.name, method))
+    log("Saved %d links to %s (method: %s)" % (len(final), OUT_B64.name, method))
 
 
 if __name__ == "__main__":
