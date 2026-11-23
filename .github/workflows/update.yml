@@ -1,15 +1,15 @@
-name: Update subscription
+name: Update data
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: update-subscription
+  group: update-data
   cancel-in-progress: false
 
 jobs:
@@ -31,24 +31,23 @@ jobs:
           mkdir -p "$RUNNER_TEMP/xk"
           cd "$RUNNER_TEMP/xk"
           curl -fsSL -o xk.zip "https://github.com/lilendian0x00/xray-knife/releases/download/v11.1.0/Xray-knife-linux-64.zip"
-          unzip -q xk.zip
-          XK_BIN="$(find . -type f -name 'xray-knife' | head -n 1)"
-          chmod +x "$XK_BIN"
-          echo "XRAY_KNIFE_BIN=$RUNNER_TEMP/xk/$XK_BIN" >> "$GITHUB_ENV"
-          "$XK_BIN" -V || true
+          unzip -o xk.zip
+          BIN=$(find . -type f -iname "xray-knife*" ! -name "*.zip" | head -n 1)
+          chmod +x "$BIN"
+          echo "XRAY_KNIFE_BIN=$(realpath "$BIN")" >> "$GITHUB_ENV"
 
-      - name: Collect configs
+      - name: Collect and test
         run: python collect.py
 
-      - name: Commit changes
+      - name: Commit data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A -- sub.txt sub_b64.txt report.txt || true
+          git add -A -- data.txt
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "No changes."
           else
-            git commit -m "Update subscription"
-            git pull --rebase origin main || true
+            git commit -m "Update data"
+            git pull --rebase
             git push
           fi
